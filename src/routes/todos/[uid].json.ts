@@ -8,6 +8,7 @@ export const del: RequestHandler = (request) => {
 export const patch: RequestHandler<{}, FormData> = async (request) => {
     const data = await request.request.formData();
     return api(request, {
-        text: data.get('text') as string
+        text: data.get('text') as string,
+        done: Boolean(data.get('done'))
     } as Todo)
 }

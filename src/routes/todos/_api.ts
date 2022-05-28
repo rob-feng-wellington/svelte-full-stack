@@ -22,7 +22,11 @@ export const api = (request: RequestEvent, todoItem?: Todo) => {
         case 'PATCH':
             todos = todos.map((todo: Todo) => {
                 if (todo.uid === request.params.uid) {
-                    todo.text = todoItem?.text as string
+                    if (Boolean(todoItem?.text)) {
+                        todo.text = todoItem?.text as string
+                    } else{
+                        todo.done = todoItem?.done as boolean
+                    }
                 }
                 return todo;
             })
