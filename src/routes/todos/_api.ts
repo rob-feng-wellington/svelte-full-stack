@@ -19,6 +19,15 @@ export const api = (request: RequestEvent, todoItem?: Todo) => {
         case 'DELETE':
             todos = todos.filter((todo: Todo) => todo.uid !== request.params.uid);
             break;
+        case 'PATCH':
+            todos = todos.map((todo: Todo) => {
+                if (todo.uid === request.params.uid) {
+                    todo.text = todoItem?.text as string
+                }
+                return todo;
+            })
+            status = 200;
+            break;
         default:
             break;
     }
