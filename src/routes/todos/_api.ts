@@ -18,6 +18,7 @@ export const api = (request: RequestEvent, todoItem?: Todo) => {
             break;
         case 'DELETE':
             todos = todos.filter((todo: Todo) => todo.uid !== request.params.uid);
+            status = 200;
             break;
         case 'PATCH':
             todos = todos.map((todo: Todo) => {
@@ -30,13 +31,15 @@ export const api = (request: RequestEvent, todoItem?: Todo) => {
                 }
                 return todo;
             })
+            body = todos.find(todo => todo.uid === request.params.uid) as Todo
             status = 200;
             break;
         default:
             break;
     }
 
-    if (request.request.method.toUpperCase() !== "GET") {
+    if (request.request.method.toUpperCase() !== "GET" &&
+        request.request.headers.get("accept") !== "application/json") {
         return {
             status: 303,
             headers: {
@@ -45,5 +48,5 @@ export const api = (request: RequestEvent, todoItem?: Todo) => {
         }
     }
 
-    return { status, body};
+    return { status, body };
 }
