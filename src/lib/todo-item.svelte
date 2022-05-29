@@ -82,8 +82,11 @@
 </style>
 
 <div class="todo" class:done={todo.done}>
-    <form action="/todos/{todo.uid}.json?_method=patch" method="post">
+    <form action="/todos/{todo.uid}.json?_method=patch" method="post" use:enhance={{
+        result: processUpdatedTodoResult
+      }}>
         <input type="hidden" name="done" value="{ todo.done ? '' : 'true' }" />
+        <input type="hidden" name="text" value="{ todo.text }" />
         <button aria-label="Maek todo as {todo.done ? 'not done' : 'done'}" class="toggle"></button>
     </form>
 

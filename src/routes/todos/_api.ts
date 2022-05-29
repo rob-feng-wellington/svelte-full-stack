@@ -1,37 +1,43 @@
 import type { RequestEvent } from '@sveltejs/kit';
+import PrismaClient from '$lib/prisma';
 
-let todos: Todo[] = [];
+const prisma = new PrismaClient();
 
-export const api = (request: RequestEvent, todoItem?: Todo) => {
+export const api = async (request: RequestEvent, todoItem?: Todo) => {
     let body = {};
     let status = 500;
 
     switch (request.request.method.toUpperCase()) {
         case 'GET':
-            body = todos;
+            body = await prisma.todo.findMany();
             status = 200;
             break;
         case 'POST':
-            todos.push(todoItem as Todo);
-            body = todoItem as Todo;
+            body = await prisma.todo.create({
+                data: {
+                    created_at: todoItem?.created_at as Date,
+                    text: todoItem?.text as string,
+                    done: todoItem?.done as boolean
+                }
+            })
             status = 201;
             break;
         case 'DELETE':
-            todos = todos.filter((todo: Todo) => todo.uid !== request.params.uid);
+            body = await prisma.todo.delete({ where: {
+                uid: request.params.uid
+            } })
             status = 200;
             break;
         case 'PATCH':
-            todos = todos.map((todo: Todo) => {
-                if (todo.uid === request.params.uid) {
-                    if (Boolean(todoItem?.text)) {
-                        todo.text = todoItem?.text as string
-                    } else{
-                        todo.done = todoItem?.done as boolean
-                    }
+            body = await prisma.todo.update({
+                where: { 
+                    uid: request.params.uid 
+                },
+                data: {
+                    done: todoItem?.done,
+                    text: todoItem?.text
                 }
-                return todo;
             })
-            body = todos.find(todo => todo.uid === request.params.uid) as Todo
             status = 200;
             break;
         default:

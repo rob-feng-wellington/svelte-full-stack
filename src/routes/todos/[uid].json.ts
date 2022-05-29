@@ -9,6 +9,6 @@ export const patch: RequestHandler<{}, FormData> = async (request) => {
     const data = await request.request.formData();
     return api(request, {
         text: data.get('text') as string,
-        done: Boolean(data.get('done'))
+        done: data.has("done") ? !!data.get("done") : undefined
     } as Todo)
 }
