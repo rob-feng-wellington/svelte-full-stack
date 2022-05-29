@@ -29,13 +29,13 @@
         form.reset();
     }
     const processUpdatedTodoResult = async (res: Response) => {
-        const updatedTodo: Todo = await res.json();
-        todos = todos.map((t: Todo) => {
+        const updatedTodo = await res.json();
+        todos = todos.map(t => {
             if (t.uid === updatedTodo.uid) {
-                t.text = updatedTodo.text;
+                return updatedTodo;
             }
             return t;
-        });
+        })
     }
 </script>
 
